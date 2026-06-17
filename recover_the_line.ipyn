@@ -129,11 +129,64 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 5,
    "id": "1a1f43f5-de5c-43fd-bb20-f3a05494c43b",
    "metadata": {},
-   "outputs": [],
-   "source": []
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(np.float64(-3880.7735109003256), np.float64(-645.5465673752769))\n"
+     ]
+    }
+   ],
+   "source": [
+    "def gradient(m, b, eps=1e-5):\n",
+    "    # how much does score change if we nudge m a tiny bit?\n",
+    "    dm = (sum_sq_resid(m + eps, b) - sum_sq_resid(m, b)) / eps\n",
+    "    # how much does score change if we nudge b a tiny bit?\n",
+    "    db = (sum_sq_resid(m, b + eps) - sum_sq_resid(m, b)) / eps\n",
+    "    return dm, db\n",
+    "\n",
+    "print(gradient(0.0, 0.0))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "781a5e22-a510-46f6-acfb-6e4826740d1a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "step 0: m=3.881, b=0.646, score=1172.91\n",
+      "step 400: m=1.787, b=7.178, score=48.35\n",
+      "step 800: m=1.773, b=7.275, score=48.30\n",
+      "step 1200: m=1.773, b=7.276, score=48.30\n",
+      "step 1600: m=1.773, b=7.276, score=48.30\n",
+      "\n",
+      "recovered: m=1.773, b=7.276\n",
+      "truth:     m=2.000, b=5.000\n"
+     ]
+    }
+   ],
+   "source": [
+    "m, b = 0.0, 0.0\n",
+    "lr = 0.001\n",
+    "\n",
+    "for i in range(2000):\n",
+    "    dm, db = gradient(m, b)\n",
+    "    m = m - lr * dm\n",
+    "    b = b - lr * db\n",
+    "    if i % 400 == 0:\n",
+    "        print(f\"step {i}: m={m:.3f}, b={b:.3f}, score={sum_sq_resid(m, b):.2f}\")\n",
+    "\n",
+    "print(f\"\\nrecovered: m={m:.3f}, b={b:.3f}\")\n",
+    "print(f\"truth:     m=2.000, b=5.000\")"
+   ]
   }
  ],
  "metadata": {
